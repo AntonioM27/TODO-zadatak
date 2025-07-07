@@ -1,0 +1,44 @@
+.task-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.task-item.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.task-item button {
+  margin-left: 8px;
+  background: none;
+  color: red;
+  border: 1px solid red;
+  padding: 2px 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.task-item button:hover {
+  background: #ffe5e5;
+}
+
+.task-link {
+  color: black;
+  text-decoration: none;
+  margin-left: 8px;
+}
+
+.task-link:hover {
+  text-decoration: underline;
+  color: blueviolet;
+}
+
+.task-category {
+  color: black;
+  font-size: 0.9rem;
+  margin-left: 5px;
+}
