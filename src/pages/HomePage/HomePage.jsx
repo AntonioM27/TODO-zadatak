@@ -3,11 +3,15 @@ import TaskList from "../../components/TaskList/TaskList";
 import "./HomePage.css";
 import CategoryFilter from "../../components/CategoryFilter/CategoryFilter";
 import TaskForm from "../../components/AddTaskForm/TaskForm";
+import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
 
 function HomePage() {
   const [apiTasks, setApiTasks] = useState([]);
   const [userTasks, setUserTasks] = useState([]);
-  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [selectedSource, setSelectedSource] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [taskToDelete, setTaskToDelete] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -45,8 +49,15 @@ function HomePage() {
   };
 
   const filteredTasks = allTasks.filter((task) => {
-    if (categoryFilter === "All") return true;
-    return task.source === categoryFilter;
+    if (selectedSource !== "All" && task.source !== selectedSource)
+      return false;
+    if (
+      selectedSource !== "api" &&
+      selectedCategory !== "All" &&
+      task.category !== selectedCategory
+    )
+      return false;
+    return true;
   });
 
   const handleAddTask = (title, category) => {
@@ -60,23 +71,47 @@ function HomePage() {
     setUserTasks((prevTasks) => [...prevTasks, newTask]);
   };
 
-  const handleDeleteTask = (id) => {
-    const updatedUserTasks = userTasks.filter((task) => task.id !== id);
+  const handleRequestDelete = (id) => {
+    setTaskToDelete(id);
+    setShowModal(true);
+  };
+
+  const confirmDelete = () => {
+    const updatedUserTasks = userTasks.filter(
+      (task) => task.id !== taskToDelete
+    );
     setUserTasks(updatedUserTasks);
+    setShowModal(false);
+    setTaskToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setShowModal(false);
+    setTaskToDelete(null);
   };
 
   return (
     <div className="homepage-container">
       <h1>To-Do App</h1>
       <TaskForm onAddTask={handleAddTask} />
+
       <CategoryFilter
-        selectedCategory={categoryFilter}
-        onSelectCategory={setCategoryFilter}
+        selectedSource={selectedSource}
+        onSelectSource={setSelectedSource}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
       />
+
       <TaskList
         tasks={filteredTasks}
         onToggle={toggleTaskCompleted}
-        onDeleteTask={handleDeleteTask}
+        onDeleteTask={handleRequestDelete}
+      />
+
+      <ConfirmationModal
+        isOpen={showModal}
+        onCancel={cancelDelete}
+        onConfirm={confirmDelete}
       />
     </div>
   );

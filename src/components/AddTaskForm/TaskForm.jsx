@@ -4,15 +4,20 @@ import "./TaskForm.css";
 function TaskForm({ onAddTask }) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Job");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      setError("Please write the task.");
+      return;
+    }
 
     onAddTask(title.trim(), category);
     setTitle("");
     setCategory("Job");
+    setError("");
   };
 
   return (
@@ -30,6 +35,7 @@ function TaskForm({ onAddTask }) {
       </select>
 
       <button type="submit">Add</button>
+      {error && <p className="error">{error}</p>}
     </form>
   );
 }
